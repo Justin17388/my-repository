@@ -1,0 +1,66 @@
+#!/bin/bash
+
+while true; do
+  echo ""
+  echo "🧮 Choose an action:"
+  echo "1 - Print range of numbers"
+  echo "2 - Sum N user inputs"
+  echo "3 - Filter even numbers only"
+  echo "4 - Exit"
+  read -p "Enter choice [1-4]: " choice
+
+# Requirement - 1
+# Build a bash script to print range of number 
+# Get the range from users
+
+  if [ "$choice" -eq 1 ]; then
+    read -p "Enter start of range: " start
+    read -p "Enter end of range: " end
+    echo "🔢 Range from $start to $end:"
+    for num in $(seq $start $end); do
+      echo -n "$num "
+    done
+    echo
+
+# Requirement - 2
+# Build a solution to print the sum of numbers
+# Get the list of numbers from user
+
+  elif [ "$choice" -eq 2 ]; then
+    read -p "How many numbers do you want to sum? " n
+    sum=0
+    for ((i=1; i<=n; i++)); do
+      read -p "Enter number #$i (0 to quit early): " input
+      if [ "$input" -eq 0 ]; then
+        echo "⛔ Early exit on zero."
+        break
+      fi
+      sum=$((sum + input))
+    done
+    echo "➕ Total sum: $sum"
+
+# Requirement - 3
+# Build a bash script to process only even numbers and skip odd numbers
+# Take the numbers and limit from users
+
+  elif [ "$choice" -eq 3 ]; then
+    read -p "How many numbers to process: " limit
+    count=0
+    while [ $count -lt $limit ]; do
+      read -p "Enter number #$((count + 1)): " value
+      if (( value % 2 != 0 )); then
+        echo "🔄 Skipped odd number: $value"
+        continue
+      fi
+      echo "✅ Even number accepted: $value"
+      ((count++))
+    done
+
+  elif [ "$choice" -eq 4 ]; then
+    echo "👋 Bye!"
+    break
+
+  else
+    echo "❌ Invalid choice. Enter a number from 1 to 4."
+  fi
+done
