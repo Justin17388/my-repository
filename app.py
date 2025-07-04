@@ -28,13 +28,14 @@
 # if __name__ == '__main__':
 #     app.run(debug=True)
 
+# Reformatted  for better flow
 from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return render_template('main.html')
+    return render_template('main.html') # Main now has a greet page link.
 
 @app.route('/greet')
 def greet():
@@ -46,13 +47,15 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # You can add validation here if needed
-        return redirect(url_for('secure'))
+        # For now we're not using the password. It can be saved to a SQlite later though.
+        return redirect(url_for('secure', username=username))
     return render_template('login.html')
 
 @app.route('/secure')
 def secure():
-    return render_template('secure.html')
+    username = request.args.get('username', 'Guest')
+    return render_template('secure.html', username=username)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
