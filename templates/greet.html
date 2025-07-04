@@ -1,7 +1,11 @@
+<!DOCTYPE html>
 <html>
-<head><title>Greeting</title></head>
+<head>
+    <title>Greeting Page</title>
+</head>
 <body>
-    <h1>Hello, {{ user }}! 👋</h1>
-    <a href="/">Back to Home</a>
+    <h1>Hello, {{ user }}!</h1>
+    <h2>Welcome to the Greeting Page</h2>
+    <a href="{{ url_for('login') }}">Login</a>
 </body>
 </html>
