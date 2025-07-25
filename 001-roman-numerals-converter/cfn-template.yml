@@ -1,0 +1,7 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description:
+    CloudFormation Template for our Roman Numerals Converter Project.
+    Built with Flask on Port 80.
+Parameters:
+Resources:
+Outputs:
