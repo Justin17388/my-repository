@@ -1,7 +1,69 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description:
-    CloudFormation Template for our Roman Numerals Converter Project.
-    Built with Flask on Port 80.
+Description: |
+  CloudFormation Template for our Roman Numerals Converter Project.
+  Built with Flask. Connect on port 80.
 Parameters:
+  LatestAMIID:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-x86_64'
+
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: Please provide a keyname
+  
 Resources:
+  # Security Group
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Open HTTP port 80, open SSH, open port 8080" # Required
+      SecurityGroupIngress: 
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 80
+          IpProtocol: "tcp"
+          ToPort: 80
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 22
+          IpProtocol: "tcp"
+          ToPort: 22
+        - CidrIp: "0.0.0.0/0"
+          FromPort: 8080
+          IpProtocol: "tcp"
+          ToPort: 8080
+
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAMIID
+      InstanceType: "t2.micro"
+      KeyName: !Ref KeyName
+      SecurityGroupIds: 
+        - !Ref WebSecurityGroup
+      Tags: 
+        - Key: "Name"
+          Value: !Sub Web Server created from the ${AWS::StackName} stack
+      UserData: !Base64 |
+        #! /bin/bash
+        yum update -y
+        yum install python3 -y
+        yum install python3-pip -y
+        pip3 install flask
+        yum install git -y
+        cd /home/ec2-user
+        wget -P templates https://raw.githubusercontent.com/Justin17388/my-repository/refs/heads/main/001-roman-numerals-converter/templates/index.html
+        wget -P templates https://raw.githubusercontent.com/Justin17388/my-repository/refs/heads/main/001-roman-numerals-converter/templates/result.html
+        wget https://raw.githubusercontent.com/Justin17388/my-repository/refs/heads/main/001-roman-numerals-converter/app.py
+        python3 app.py
+  
 Outputs:
+  WebIP:
+    Description: Roman Numerals Web Server URL
+    Value: !Sub
+      - http://${IPAdd}
+      - IPAdd: !GetAtt WebServer.PublicDnsName
+
+
+
+
+
+
